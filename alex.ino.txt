@@ -391,16 +391,28 @@ volatile unsigned int redFrequency = 0;
 volatile unsigned int greenFrequency = 0;
 volatile unsigned int blueFrequency = 0;
 
+const int redMax = 550;
+const int redMin = 50;
+const int greenMax = 513;
+const int greenMin = 65;
+
 void sendColor(){
   getColor();
+
+  int mappedR = constrain(map(redFrequency, redMax, redMin, 0, 255), 0, 255);
+  int mappedG = constrain(map(greenFrequency, greenMax, greenMin, 0, 255), 0, 255);
+  
   TPacket colourPacket;
   colourPacket.packetType = PACKET_TYPE_RESPONSE;
   colourPacket.command = RESP_COLOUR;
-  colourPacket.params[0] = map(redFrequency,550,50,0,255) > 0?map(redFrequency,550,50,0,255): 0;
-  colourPacket.params[1] = map(greenFrequency,513,65,0,255) > 0?map(greenFrequency,513,65,0,255): 0;
-  colourPacket.params[2] = map(blueFrequency,507,48,0,255) >0?map(blueFrequency,507,48,0,255): 0;
+  colourPacket.params[0] = mappedR;
+  colourPacket.params[1] = mappedG;
+  
+  char buffer[64];  
+  sprintf(buffer, "RGB after calibration: %d, %d\n", mappedR, mappedG);
+  dbprintf(buffer);
+  
   sendResponse(&colourPacket);
-
 }
 
 void openClaw() {
@@ -636,25 +648,18 @@ void getColor() {
     digitalWrite(S2, LOW);
     digitalWrite(S3, LOW);
     int redFrequency = pulseIn(OUT, LOW);
-    dbprintf("R = ");
-    dbprintf(redFrequency);
+    char buffer[64];  
+    sprintf(buffer, "redFrequency: %d\n", redFrequency);
+    dbprintf(buffer);
 
       
     digitalWrite(S2, HIGH);
     digitalWrite(S3, HIGH);
     int greenFrequency = pulseIn(OUT, LOW);
-    dbprintf("G = ");
-    dbprintf(greenFrequency); 
+    buffer[64] = 0;
+    sprintf(buffer, "greenFrequency: %d\n", greenFrequency);
+    dbprintf(buffer); 
 }
-
-//void onRedDetected() {
-//    dbprintf("Red Color Detected! Rotating Clockwise.");
-//}
-//
-//void onGreenDetected() {
-//    dbprintf("Green Color Detected! Rotating Counterclockwise.");
-//}
-
 
 void setup() {
   // put your setup code here, to run once:

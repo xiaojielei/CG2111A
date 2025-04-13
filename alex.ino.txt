@@ -425,6 +425,8 @@ void closeClaw() {
     servo2.write(90);
 } 
 
+unsigned long targetTime;
+
 void handleCommand(TPacket *command)
 {
   switch(command->command)
@@ -441,7 +443,7 @@ void handleCommand(TPacket *command)
         sendOK();
         sendColor();
       break;
-    // For movement commands, param[0] = distance, param[1] = speed.
+//     For movement commands, param[0] = distance, param[1] = speed.
     case COMMAND_FORWARD:
         sendOK();
         forward((double) command->params[0], (float) command->params[1]);
@@ -559,6 +561,9 @@ void handleSerial() {
       {
         sendBadChecksum();
       }
+    if (millis() >= targetTime) {
+        stop();
+    }
 }
 
 void handleMovement() {
@@ -647,7 +652,7 @@ void colorSetup() {
 void getColor() {
     digitalWrite(S2, LOW);
     digitalWrite(S3, LOW);
-    int redFrequency = pulseIn(OUT, LOW);
+    redFrequency = pulseIn(OUT, LOW);
     char buffer[64];  
     sprintf(buffer, "redFrequency: %d\n", redFrequency);
     dbprintf(buffer);
@@ -655,7 +660,7 @@ void getColor() {
       
     digitalWrite(S2, HIGH);
     digitalWrite(S3, HIGH);
-    int greenFrequency = pulseIn(OUT, LOW);
+    greenFrequency = pulseIn(OUT, LOW);
     buffer[64] = 0;
     sprintf(buffer, "greenFrequency: %d\n", greenFrequency);
     dbprintf(buffer); 
@@ -689,5 +694,6 @@ void loop() {
  // put your main code here, to run repeatedly:
     handleSerial();       
     handleMovement();       
-    handleRotation();  
+    handleRotation(); 
+
 }

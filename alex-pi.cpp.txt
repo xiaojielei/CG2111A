@@ -72,8 +72,6 @@ void handleColour(TPacket*packet){
 
 	printf("green frequency:\t\t%d\n", packet->params[1]);
 
-	printf("blue frequency:\t\t%d\n", packet->params[2]);
-
 	printf("\n---------------------------------------\n\n");
 
 }
@@ -564,7 +562,7 @@ void sendCommand(char command)//need to be changed for new claw commands
 
 			break;
 
-			
+		
 
 		default:
 
@@ -626,7 +624,7 @@ int main()
 
 		char ch;
 
-		printf("Command (f=forward, b=reverse, l=turn left, r=turn right, s=stop, c=clear stats, g=get stats, i = identify color, o=open claw, p=close claw q=exit)\n");
+		printf("f=forward, b=reverse, l=turn left, r=turn right, s=stop, c=clear stats, g=get stats, i = identify color, o=open claw, p=close claw q=exit)\n");
 
 		scanf("%c", &ch);
 

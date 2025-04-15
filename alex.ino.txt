@@ -391,14 +391,14 @@ volatile unsigned int redFrequency = 0;
 volatile unsigned int greenFrequency = 0;
 volatile unsigned int blueFrequency = 0;
 
-const int redMax = 550;
-const int redMin = 50;
-const int greenMax = 513;
-const int greenMin = 65;
+const int redMax = 95;
+const int redMin = 70;
+const int greenMax = 100;
+const int greenMin =80;
 
 void sendColor(){
   getColor();
-
+  
   int mappedR = constrain(map(redFrequency, redMax, redMin, 0, 255), 0, 255);
   int mappedG = constrain(map(greenFrequency, greenMax, greenMin, 0, 255), 0, 255);
   
@@ -561,9 +561,7 @@ void handleSerial() {
       {
         sendBadChecksum();
       }
-    if (millis() >= targetTime) {
-        stop();
-    }
+
 }
 
 void handleMovement() {
@@ -628,10 +626,30 @@ void handleRotation() {
     }
 }
 
+void calibrateColor() {
+    char buffer[64];
+    
+    dbprintf("Place a RED surface close to the sensor...\n");
+    delay(3000); // Give time to place it
+    digitalWrite(S2, LOW);
+    digitalWrite(S3, LOW);
+    redFrequency = pulseIn(OUT, LOW);
+    sprintf(buffer, "Calibrated RED frequency: %d\n", redFrequency);
+    dbprintf(buffer);
+    
+    dbprintf("Place a GREEN surface close to the sensor...\n");
+    delay(3000); // Give time to place it
+    digitalWrite(S2, HIGH);
+    digitalWrite(S3, HIGH);
+    greenFrequency = pulseIn(OUT, LOW);
+    sprintf(buffer, "Calibrated GREEN frequency: %d\n", greenFrequency);
+    dbprintf(buffer);
+}
+
 
 void colorSetup() {
     // Servo setup
-    servo1.attach(45);
+    servo1.attach(50);
     servo2.attach(30);
     servo1.write(90);  // Start at center position
     servo2.write(90);
@@ -683,14 +701,9 @@ alexCirc = PI * alexDiagonal;
 }
 
 void loop() {
-  
-// Uncomment the code below for Step 2 of Activity 3 in Week 8 Studio 2
+ 
 
- //forward(0, 100);
 
-// Uncomment the code below for Week 9 Studio 2
-
-///*
  // put your main code here, to run repeatedly:
     handleSerial();       
     handleMovement();       

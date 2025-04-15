@@ -626,27 +626,6 @@ void handleRotation() {
     }
 }
 
-void calibrateColor() {
-    char buffer[64];
-    
-    dbprintf("Place a RED surface close to the sensor...\n");
-    delay(3000); // Give time to place it
-    digitalWrite(S2, LOW);
-    digitalWrite(S3, LOW);
-    redFrequency = pulseIn(OUT, LOW);
-    sprintf(buffer, "Calibrated RED frequency: %d\n", redFrequency);
-    dbprintf(buffer);
-    
-    dbprintf("Place a GREEN surface close to the sensor...\n");
-    delay(3000); // Give time to place it
-    digitalWrite(S2, HIGH);
-    digitalWrite(S3, HIGH);
-    greenFrequency = pulseIn(OUT, LOW);
-    sprintf(buffer, "Calibrated GREEN frequency: %d\n", greenFrequency);
-    dbprintf(buffer);
-}
-
-
 void colorSetup() {
     // Servo setup
     servo1.attach(50);
